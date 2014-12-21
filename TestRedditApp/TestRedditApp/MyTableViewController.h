@@ -10,6 +10,8 @@
 
 @interface MyTableViewController : UITableViewController
 
-@property (strong, nonatomic) NSString *jsonData;
+//@property (strong, nonatomic) NSString *jsonData;
+@property (strong, nonatomic) NSString *searchTerm;
+@property (strong, nonatomic) NSArray *resultsArray;
 
 @end

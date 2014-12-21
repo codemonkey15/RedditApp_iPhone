@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MyTableViewController.h"
 
-@interface ViewController : UIViewController<UITextFieldDelegate>
+@interface ViewController : UIViewController<UITextFieldDelegate, UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *searchTextField;
 @property (weak, nonatomic) IBOutlet UIButton *searchButton;
 @property (strong, nonatomic) NSString *result;

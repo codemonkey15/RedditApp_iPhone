@@ -15,14 +15,16 @@
 
 @implementation MyTableViewController
 
-NSMutableArray *array;
+//NSMutableArray *array;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    array = [[NSMutableArray alloc] init];
+    self.navigationItem.title = self.searchTerm;
     
-    NSDictionary *dict = nil;
+//    array = [[NSMutableArray alloc] init];
+    
+//    NSDictionary *dict = nil;
     
     //NSLog(@"%@", _jsonData);
     
@@ -31,48 +33,48 @@ NSMutableArray *array;
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
-    NSData *json = [_jsonData dataUsingEncoding:NSUTF8StringEncoding];
+//    NSData *json = [_jsonData dataUsingEncoding:NSUTF8StringEncoding];
+//    
+//    if(NSClassFromString(@"NSJSONSerialization")){
+//        NSError *error = nil;
+//        
+//        if(json){
+//            dict = [NSJSONSerialization JSONObjectWithData:json options:0 error:&error];
+//        }
+//    }
     
-    if(NSClassFromString(@"NSJSONSerialization")){
-        NSError *error = nil;
-        
-        if(json){
-            dict = [NSJSONSerialization JSONObjectWithData:json options:0 error:&error];
-        }
-    }
-    
-    NSDictionary *dataDic = dict[@"data"];
-    
-    NSArray *arr = dataDic[@"children"];
-    
-    
-    
-    for (NSDictionary *dictionary in arr) {
-        
-        NSDictionary *subDataDic = dictionary[@"data"];
-        
-        MyTableViewCell *cell = [[MyTableViewCell alloc] init];
-        
-        NSString *title = [subDataDic objectForKey:@"title"];
-        cell.titleVal = title;
-        NSLog(@"Title: %@",title);
-        
-        
-        NSString *author = [subDataDic objectForKey:@"author"];
-        cell.authorVal = author;
-        NSLog(@"Author: %@",author);
-        
-        NSString *created = [subDataDic objectForKey:@"created"];
-        cell.dateVal = created;
-        NSLog(@"Created: %@",created);
-        
-        NSString *score = [subDataDic objectForKey:@"score"];
-        cell.scoreVal = score;
-        NSLog(@"Score: %@",score);
-        
-        [array addObject:cell];
-        
-    }
+//    NSDictionary *dataDic = dict[@"data"];
+//    
+//    NSArray *arr = dataDic[@"children"];
+//    
+//    
+//    
+//    for (NSDictionary *dictionary in arr) {
+//        
+//        NSDictionary *subDataDic = dictionary[@"data"];
+//        
+//        MyTableViewCell *cell = [[MyTableViewCell alloc] init];
+//        
+//        NSString *title = [subDataDic objectForKey:@"title"];
+//        cell.titleVal = title;
+//        NSLog(@"Title: %@",title);
+//        
+//        
+//        NSString *author = [subDataDic objectForKey:@"author"];
+//        cell.authorVal = author;
+//        NSLog(@"Author: %@",author);
+//        
+//        NSString *created = [subDataDic objectForKey:@"created"];
+//        cell.dateVal = created;
+//        NSLog(@"Created: %@",created);
+//        
+//        NSString *score = [subDataDic objectForKey:@"score"];
+//        cell.scoreVal = score;
+//        NSLog(@"Score: %@",score);
+//        
+//        [array addObject:cell];
+//        
+//    }
     
     
     //for(id key in dict)
@@ -98,7 +100,7 @@ NSMutableArray *array;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return array.count;
+    return self.resultsArray.count;
 }
 
 
@@ -110,10 +112,26 @@ NSMutableArray *array;
         cell = [[MyTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"myIdentifier"];
     }
     
-    MyTableViewCell *cell1 = [array objectAtIndex:indexPath.row];
+    NSDictionary *currData = [[self.resultsArray objectAtIndex:indexPath.row] objectForKey:@"data"];
+    NSLog(@"data: %@", currData);
+    cell.titleLabel.text = [currData objectForKey:@"title"];
+    cell.authorLabel.text = [currData objectForKey:@"author"];
     
-    cell.titleLabel.text = cell1.titleVal;
-    cell.authorLabel.text = cell1.authorVal;
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[currData objectForKey:@"created_utc"] doubleValue]];
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"yyyy-MM-dd ha"];
+    cell.dateLabel.text = [df stringFromDate:date];
+
+    if([currData objectForKey:@"score"] && ![[currData objectForKey:@"score"] isKindOfClass:[NSNull class]]) {
+        cell.scoreLabel.text = [[currData objectForKey:@"score"] stringValue];
+    } else {
+        cell.scoreLabel.text = @"No Score";
+    }
+    
+//    MyTableViewCell *cell1 = [array objectAtIndex:indexPath.row];
+    
+//    cell.titleLabel.text = cell1.titleVal;
+//    cell.authorLabel.text = cell1.authorVal;
     //cell.dateLabel.text = cell1.dateVal;
     //cell.scoreLabel.text = cell1.scoreVal;
     
